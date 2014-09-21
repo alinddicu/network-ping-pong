@@ -19,7 +19,6 @@ window.cancelRequestAnimFrame = ( function() {
 		clearTimeout
 } )();
 
-
 // Initialize canvas and required variables
 var canvas = document.getElementById("canvas"),
 		ctx = canvas.getContext("2d"), // Create canvas context
@@ -91,7 +90,6 @@ ball = {
 		ctx.fill();
 	}
 };
-
 
 // Start Button object
 startBtn = {
@@ -205,8 +203,7 @@ function update() {
 	// and change the multiplier
 	if(collides(ball, p1)) {
 		collideAction(ball, p1);
-	}
-	
+	}	
 	
 	else if(collides(ball, p2)) {
 		collideAction(ball, p2);
@@ -237,8 +234,6 @@ function update() {
 			ball.x = ball.r;
 		}
 	}
-	
-	
 	
 	// If flag is set, push the particles
 	if(flag == 1) { 
