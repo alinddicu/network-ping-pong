@@ -1,53 +1,53 @@
-// RequestAnimFrame: a browser API for getting smooth animations
+
+var fps = 60; // Max FPS (frames per second)// RequestAnimFrame: a browser API for getting smooth animations
+
 window.requestAnimFrame = (function(){
-	return  window.requestAnimationFrame       || 
+	return  window.requestAnimationFrame || 
 		window.webkitRequestAnimationFrame || 
-		window.mozRequestAnimationFrame    || 
-		window.oRequestAnimationFrame      || 
-		window.msRequestAnimationFrame     ||  
-		function( callback ){
-			return window.setTimeout(callback, 1000 / 60);
+		window.mozRequestAnimationFrame || 
+		window.oRequestAnimationFrame || 
+		window.msRequestAnimationFrame ||  
+		function(callback){
+			return window.setTimeout(callback, 1000 / fps);
 		};
 })();
 
 window.cancelRequestAnimFrame = ( function() {
-	return window.cancelAnimationFrame          ||
-		window.webkitCancelRequestAnimationFrame    ||
-		window.mozCancelRequestAnimationFrame       ||
-		window.oCancelRequestAnimationFrame     ||
-		window.msCancelRequestAnimationFrame        ||
+	return window.cancelAnimationFrame ||
+		window.webkitCancelRequestAnimationFrame ||
+		window.mozCancelRequestAnimationFrame ||
+		window.oCancelRequestAnimationFrame ||
+		window.msCancelRequestAnimationFrame ||
 		clearTimeout
-} )();
+})();
 
 // Initialize canvas and required variables
-var canvas = document.getElementById("canvas"),
-		ctx = canvas.getContext("2d"), // Create canvas context
-		W = 300, // Window's width
-		H = window.innerHeight - 100, // Window's height
-		particles = [], // Array containing particles
-		ball = {}, // Ball object
-		paddles = [2], // Array containing two paddles
-		mouse = {}, // Mouse object to store it's current position
-		points = 0, // Variable to store points
-		fps = 60, // Max FPS (frames per second)
-		particlesCount = 20, // Number of sparks when ball strikes the paddle
-		isCollison = false, // Flag variable which is changed on collision
-		particlePos = {}, // Object to contain the position of collision 
-		multipler = 1, // Variable to control the direction of sparks
-		startBtn = {}, // Start button object
-		restartBtn = {}, // Restart button object
-		isGameOver = false, // flag variable, changed when the game is over
-		init, // variable to initialize animation
-		paddleHit,
-		paddleHitTop = 0,
-		paddleHitBottom = 1;
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d"); // Create canvas context
+var W = 300; // Window's width
+var H = window.innerHeight - 100; // Window's height
+var particles = []; // Array containing particles
+var ball = {}; // Ball object
+var paddles = [2]; // Array containing two paddles
+var mouse = {}; // Mouse object to store it's current position
+var points = 0; // Variable to store points
+var increaseSpeedThreshold = 10; // number of hit after which speed is increased
+var particlesCount = 20; // Number of sparks when ball strikes the paddle
+var isCollison = false; // Flag variable which is changed on collision
+var particlePos = {}; // Object to contain the position of collision 
+var multipler = 1; // Variable to control the direction of sparks
+var startBtn = {}; // Start button object
+var restartBtn = {}; // Restart button object
+var isGameOver = false; // flag variable, changed when the game is over
+var init; // variable to initialize animation
+var paddleHit; // contains which paddle was hit
+var paddleHitTop = 0; // paddle hit was top
+var paddleHitBottom = 1; // paddle hit was bottom
+var collision = document.getElementById("collide"); // Initialise the collision sound
 
 // Add mousemove and mousedown events to the canvas
 canvas.addEventListener("mousemove", trackPosition, true);
 canvas.addEventListener("mousedown", btnClick, true);
-
-// Initialise the collision sound
-var collision = document.getElementById("collide");
 
 // Set the canvas's height and width to full screen
 canvas.width = W;
@@ -92,45 +92,33 @@ ball = {
 	}
 };
 
-// Start Button object
-startBtn = {
-	w: 100,
-	h: 50,
-	x: W/2 - 50,
-	y: H/2 - 25,
+// button 
+var button = function(label) {
+	var self = this;
 	
-	draw: function() {
+	self.w = 100;
+	self.h = 50;
+	self.x = W/2 - 50;
+	self.y = H/2 - 25;
+	
+	self.draw = function() {
 		ctx.strokeStyle = "white";
 		ctx.lineWidth = "2";
-		ctx.strokeRect(this.x, this.y, this.w, this.h);
+		ctx.strokeRect(self.x, self.y, self.w, self.h);
 		
 		ctx.font = "18px Arial, sans-serif";
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 		ctx.fillStlye = "white";
-		ctx.fillText("Start", W/2, H/2 );
+		ctx.fillText(label, W/2, H/2 );
 	}
 };
 
+// Start Button object
+startBtn = new button("Start");
+
 // Restart Button object
-restartBtn = {
-	w: 100,
-	h: 50,
-	x: W/2 - 50,
-	y: H/2 - 50,
-	
-	draw: function() {
-		ctx.strokeStyle = "white";
-		ctx.lineWidth = "2";
-		ctx.strokeRect(this.x, this.y, this.w, this.h);
-		
-		ctx.font = "18px Arial, sans-serif";
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillStlye = "white";
-		ctx.fillText("Restart", W/2, H/2 - 25 );
-	}
-};
+restartBtn = new button("Restart");
 
 // Function for creating particles object
 function createParticles(x, y, m) {
@@ -159,7 +147,7 @@ function draw() {
 
 // Function to increase speed after every 5 points
 function increaseBallSpeed() {
-	if(points % 4 == 0) {
+	if(points % increaseSpeedThreshold == 0) {
 		if(Math.abs(ball.vx) < 15) {
 			ball.vx += (ball.vx < 0) ? -1 : 1;
 			ball.vy += (ball.vy < 0) ? -2 : 2;
@@ -193,8 +181,8 @@ function update() {
 	ball.y += ball.vy;
 	
 	// Collision with paddles
-	p1 = paddles[0];
-	p2 = paddles[1];
+	topPaddle = paddles[0];
+	bottomPaddle = paddles[1];
 	
 	// If the ball strikes with paddles,
 	// invert the y-velocity vector of ball,
@@ -202,11 +190,11 @@ function update() {
 	// save collision's position so that sparks can be
 	// emitted from that position, set the flag variable,
 	// and change the multiplier
-	if(collides(ball, p1)) {
-		collideAction(ball, p1);
+	if(doesBallCollidesWithPaddle(ball, topPaddle)) {
+		collideAction(ball, topPaddle);
 	}	
-	else if(collides(ball, p2)) {
-		collideAction(ball, p2);
+	else if(doesBallCollidesWithPaddle(ball, bottomPaddle)) {
+		collideAction(ball, bottomPaddle);
 	}	
 	else {
 		// Collide with walls, If the ball hits the top/bottom,
@@ -248,7 +236,7 @@ function update() {
 
 //Function to check collision between ball and one of
 //the paddles
-function collides(b, p) {
+function doesBallCollidesWithPaddle(b, p) {
 	if(b.x + ball.r >= p.x && b.x - ball.r <=p.x + p.w) {
 		if(b.y >= (p.y - p.h) && p.y > 0){
 			paddleHit = paddleHitTop;
