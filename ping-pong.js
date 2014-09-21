@@ -27,17 +27,16 @@ var ctx = canvas.getContext("2d"); // Create canvas context
 var W = 300; // Window's width
 var H = window.innerHeight - 100; // Window's height
 var particles = []; // Array containing particles
-var ball = {}; // Ball object
-var paddles = [2]; // Array containing two paddles
+var ball = new Ball(); // Ball object
+var paddles = [new Paddle("bottom"), new Paddle("top")]; // Array containing two paddles
 var mouse = {}; // Mouse object to store it's current position
 var points = 0; // Variable to store points
-var increaseSpeedThreshold = 10; // number of hit after which speed is increased
 var particlesCount = 20; // Number of sparks when ball strikes the paddle
 var isCollison = false; // Flag variable which is changed on collision
 var particlePos = {}; // Object to contain the position of collision 
 var multipler = 1; // Variable to control the direction of sparks
-var startBtn = {}; // Start button object
-var restartBtn = {}; // Restart button object
+var startBtn =  new Button("Start"); // Start button object
+var restartBtn = new Button("Restart"); // Restart button object
 var isGameOver = false; // flag variable, changed when the game is over
 var init; // variable to initialize animation
 var paddleHit; // contains which paddle was hit
@@ -57,105 +56,17 @@ canvas.height = H;
 function paintCanvas() {
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, W, H);
-}
-
-// Function for creating paddles
-function Paddle(pos) {
-	// Height and width
-	this.h = 5;
-	this.w = 150;
-	
-	// Paddle's position
-	this.x = W/2 - this.w/2;
-	this.y = (pos == "top") ? 0 : H - this.h;	
-	
-	this.draw = function(){	
-		ctx.fillStyle = "white";
-		ctx.fillRect(this.x, this.y, this.w, this.h);
-	};
-}
-
-// Push two new paddles into the paddles[] array
-paddles[0] = new Paddle("bottom");
-paddles[1] = new Paddle("top");
-
-// Ball object
-var Ball = function (){
-	this.x = 50;
-	this.y = 50;
-	this.r = 5;
-	this.c = "white";
-	this.vx = 4;
-	this.vy = 8;
-	
-	// Function for drawing ball on canvas
-	this.draw = function() {
-		ctx.beginPath();
-		ctx.fillStyle = this.c;
-		ctx.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
-		ctx.fill();
-	};
 };
-
-ball = new Ball();
-
-// button 
-var button = function(label) {	
-	this.w = 100;
-	this.h = 50;
-	this.x = W/2 - 50;
-	this.y = H/2 - 25;
-	
-	this.draw = function() {
-		ctx.strokeStyle = "white";
-		ctx.lineWidth = "2";
-		ctx.strokeRect(this.x, this.y, this.w, this.h);
-		
-		ctx.font = "18px Arial, sans-serif";
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillStlye = "white";
-		ctx.fillText(label, W/2, H/2 );
-	}
-};
-
-// Start Button object
-startBtn = new button("Start");
-
-// Restart Button object
-restartBtn = new button("Restart");
-
-// Function for creating particles object
-function createParticles(x, y, m) {
-	this.x = x || 0;
-	this.y = y || 0;
-	
-	this.radius = 1.2;
-	
-	this.vx = -1.5 + Math.random()*3;
-	this.vy = m * Math.random()*1.5;
-}
 
 // Draw everything on canvas
 function draw() {
 	paintCanvas();
 	for(var i = 0; i < paddles.length; i++) {
-		var paddle = paddles[i];
-		paddle.draw();
+		var paddle = paddles[i].draw();
 	}
 	
 	ball.draw();
 	update();
-}
-
-// Function to increase speed after every 5 points
-function increaseBallSpeed() {
-	if(points % increaseSpeedThreshold == 0) {
-		if(Math.abs(ball.vx) < 15) {
-			ball.vx += (ball.vx < 0) ? -1 : 1;
-			ball.vy += (ball.vy < 0) ? -2 : 2;
-		}
-	}
 }
 
 // Track the position of mouse cursor
@@ -226,7 +137,7 @@ function update() {
 	// If flag is set, push the particles
 	if(isCollison) { 
 		for(var k = 0; k < particlesCount; k++) {
-			particles.push(new createParticles(particlePos.x, particlePos.y, multiplier));
+			particles.push(new Particle(particlePos.x, particlePos.y, multiplier));
 		}
 	}	
 	
@@ -271,7 +182,7 @@ function collideAction(paddle) {
 	}
 	
 	points++;
-	increaseBallSpeed();
+	ball.increaseBallSpeed(points);
 	
 	if(collision) {
 		if(points > 0){ 
