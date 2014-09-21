@@ -30,8 +30,6 @@ var ball = new Ball(); // Ball object
 var paddles = [new Paddle("bottom"), new Paddle("top")]; // Array containing two paddles
 var mouse = {}; // Mouse object to store it's current position
 var points = 0; // Variable to store points
-var isCollison = false; // Flag variable which is changed on collision
-var multipler = 1; // Variable to control the direction of sparks
 var startBtn =  new Button("Start"); // Start button object
 var restartBtn = new Button("Restart"); // Restart button object
 var isGameOver = false; // flag variable, changed when the game is over
@@ -93,22 +91,18 @@ function update() {
 	
 	// Collision with paddles
 	topPaddle = paddles[0];
-	bottomPaddle = paddles[1];
-	
-	// Object to contain the position of collision 
-	var particlePosition = {}; 
+	bottomPaddle = paddles[1]; 
 	
 	// If the ball strikes with paddles,
 	// invert the y-velocity vector of ball,
 	// increment the points, play the collision sound,
 	// save collision's position so that sparks can be
-	// emitted from that position, set the flag variable,
-	// and change the multiplier
+	// emitted from that position, set the flag variable
 	if(doesBallCollidesWithPaddle(ball, topPaddle)) {
-		collideAction(particlePosition, topPaddle);
+		collideAction(topPaddle);
 	}	
 	else if(doesBallCollidesWithPaddle(ball, bottomPaddle)) {
-		collideAction(particlePosition, bottomPaddle);
+		collideAction(bottomPaddle);
 	}	
 	else {
 		// Collide with walls, If the ball hits the top/bottom,
@@ -133,28 +127,20 @@ function update() {
 			ball.x = ball.r;
 		}
 	}
-	
-	// If flag is set, push the particles
-	if(isCollison) { 
-		new ParticleEmitter(ctx, particlePosition, multiplier);
-	}
-	
-	// reset flag
-	isCollison = false;
 }
 
 //Function to check collision between ball and one of
 //the paddles
-function doesBallCollidesWithPaddle(b, p) {
-	if(b.x + ball.r >= p.x && b.x - ball.r <=p.x + p.w) {
-		if(b.y >= (p.y - p.h) && p.y > 0){
+function doesBallCollidesWithPaddle(movingBall, paddle) {
+	if(movingBall.x + ball.r >= paddle.x && movingBall.x - ball.r <= paddle.x + paddle.w) {
+		if(movingBall.y >= (paddle.y - paddle.h) && paddle.y > 0){
 			paddleHit = paddleHitTop;
 			return true;
-		}		
-		else if(b.y <= p.h && p.y == 0) {
+		}
+		else if(movingBall.y <= paddle.h && paddle.y == 0) {
 			paddleHit = paddleHitBottom;
 			return true;
-		}		
+		}
 		else {
 			return false;
 		}
@@ -162,18 +148,14 @@ function doesBallCollidesWithPaddle(b, p) {
 }
 
 //Do this when collides == true
-function collideAction(particlePosition, paddle) {
+function collideAction(paddle) {
 	ball.vy = -ball.vy;
 	
 	if(paddleHit == paddleHitTop) {
-		ball.y = paddle.y - paddle.h;
-		particlePosition.y = ball.y + ball.r;
-		multiplier = -1;	
+		ball.y = paddle.y - paddle.h;	
 	}	
 	else if(paddleHit == paddleHitBottom) {
 		ball.y = paddle.h + ball.r;
-		particlePosition.y = ball.y - ball.r;
-		multiplier = 1;	
 	}
 	
 	points++;
@@ -187,9 +169,6 @@ function collideAction(particlePosition, paddle) {
 		collision.currentTime = 0;
 		collision.play();
 	}
-	
-	particlePosition.x = ball.x;
-	isCollison = true;
 };
 
 // Function for updating score
