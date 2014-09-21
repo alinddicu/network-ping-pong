@@ -98,10 +98,10 @@ function update() {
 	// increment the points, play the collision sound,
 	// save collision's position so that sparks can be
 	// emitted from that position, set the flag variable
-	if(doesBallCollidesWithPaddle(ball, topPaddle)) {
+	if(doesBallCollidesWithPaddle(topPaddle)) {
 		collideAction(topPaddle);
 	}	
-	else if(doesBallCollidesWithPaddle(ball, bottomPaddle)) {
+	else if(doesBallCollidesWithPaddle(bottomPaddle)) {
 		collideAction(bottomPaddle);
 	}	
 	else {
@@ -131,13 +131,13 @@ function update() {
 
 //Function to check collision between ball and one of
 //the paddles
-function doesBallCollidesWithPaddle(movingBall, paddle) {
-	if(movingBall.x + ball.r >= paddle.x && movingBall.x - ball.r <= paddle.x + paddle.w) {
-		if(movingBall.y >= (paddle.y - paddle.h) && paddle.y > 0){
+function doesBallCollidesWithPaddle(paddle) {
+	if(ball.x + ball.r >= paddle.x && ball.x - ball.r <= paddle.x + paddle.w) {
+		if(ball.y >= (paddle.y - paddle.h) && paddle.y > 0){
 			paddleHit = paddleHitTop;
 			return true;
 		}
-		else if(movingBall.y <= paddle.h && paddle.y == 0) {
+		else if(ball.y <= paddle.h && paddle.y == 0) {
 			paddleHit = paddleHitBottom;
 			return true;
 		}
