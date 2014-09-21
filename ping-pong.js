@@ -68,6 +68,11 @@ function Paddle(pos) {
 	// Paddle's position
 	this.x = W/2 - this.w/2;
 	this.y = (pos == "top") ? 0 : H - this.h;	
+	
+	this.draw = function(){	
+		ctx.fillStyle = "white";
+		ctx.fillRect(this.x, this.y, this.w, this.h);
+	};
 }
 
 // Push two new paddles into the paddles[] array
@@ -75,36 +80,36 @@ paddles[0] = new Paddle("bottom");
 paddles[1] = new Paddle("top");
 
 // Ball object
-ball = {
-	x: 50,
-	y: 50, 
-	r: 5,
-	c: "white",
-	vx: 4,
-	vy: 8,
+var Ball = function (){
+	this.x = 50;
+	this.y = 50;
+	this.r = 5;
+	this.c = "white";
+	this.vx = 4;
+	this.vy = 8;
 	
 	// Function for drawing ball on canvas
-	draw: function() {
+	this.draw = function() {
 		ctx.beginPath();
 		ctx.fillStyle = this.c;
 		ctx.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
 		ctx.fill();
-	}
+	};
 };
 
+ball = new Ball();
+
 // button 
-var button = function(label) {
-	var self = this;
+var button = function(label) {	
+	this.w = 100;
+	this.h = 50;
+	this.x = W/2 - 50;
+	this.y = H/2 - 25;
 	
-	self.w = 100;
-	self.h = 50;
-	self.x = W/2 - 50;
-	self.y = H/2 - 25;
-	
-	self.draw = function() {
+	this.draw = function() {
 		ctx.strokeStyle = "white";
 		ctx.lineWidth = "2";
-		ctx.strokeRect(self.x, self.y, self.w, self.h);
+		ctx.strokeRect(this.x, this.y, this.w, this.h);
 		
 		ctx.font = "18px Arial, sans-serif";
 		ctx.textAlign = "center";
@@ -135,10 +140,8 @@ function createParticles(x, y, m) {
 function draw() {
 	paintCanvas();
 	for(var i = 0; i < paddles.length; i++) {
-		p = paddles[i];
-		
-		ctx.fillStyle = "white";
-		ctx.fillRect(p.x, p.y, p.w, p.h);
+		var paddle = paddles[i];
+		paddle.draw();
 	}
 	
 	ball.draw();
@@ -171,8 +174,8 @@ function update() {
 	// Move the paddles on mouse move
 	if(mouse.x && mouse.y) {
 		for(var i = 0; i < paddles.length; i++) {
-			p = paddles[i];
-			p.x = mouse.x - p.w/2;
+			var paddle = paddles[i];
+			paddle.x = mouse.x - paddle.w/2;
 		}		
 	}
 	
@@ -191,10 +194,10 @@ function update() {
 	// emitted from that position, set the flag variable,
 	// and change the multiplier
 	if(doesBallCollidesWithPaddle(ball, topPaddle)) {
-		collideAction(ball, topPaddle);
+		collideAction(topPaddle);
 	}	
 	else if(doesBallCollidesWithPaddle(ball, bottomPaddle)) {
-		collideAction(ball, bottomPaddle);
+		collideAction(bottomPaddle);
 	}	
 	else {
 		// Collide with walls, If the ball hits the top/bottom,
@@ -253,16 +256,16 @@ function doesBallCollidesWithPaddle(b, p) {
 }
 
 //Do this when collides == true
-function collideAction(ball, p) {
+function collideAction(paddle) {
 	ball.vy = -ball.vy;
 	
 	if(paddleHit == paddleHitTop) {
-		ball.y = p.y - p.h;
+		ball.y = paddle.y - paddle.h;
 		particlePos.y = ball.y + ball.r;
 		multiplier = -1;	
 	}	
 	else if(paddleHit == paddleHitBottom) {
-		ball.y = p.h + ball.r;
+		ball.y = paddle.h + ball.r;
 		particlePos.y = ball.y - ball.r;
 		multiplier = 1;	
 	}
