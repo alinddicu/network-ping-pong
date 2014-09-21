@@ -26,14 +26,11 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d"); // Create canvas context
 var W = 300; // Window's width
 var H = window.innerHeight - 100; // Window's height
-var particles = []; // Array containing particles
 var ball = new Ball(); // Ball object
 var paddles = [new Paddle("bottom"), new Paddle("top")]; // Array containing two paddles
 var mouse = {}; // Mouse object to store it's current position
 var points = 0; // Variable to store points
-var particlesCount = 20; // Number of sparks when ball strikes the paddle
 var isCollison = false; // Flag variable which is changed on collision
-var particlePos = {}; // Object to contain the position of collision 
 var multipler = 1; // Variable to control the direction of sparks
 var startBtn =  new Button("Start"); // Start button object
 var restartBtn = new Button("Restart"); // Restart button object
@@ -98,6 +95,9 @@ function update() {
 	topPaddle = paddles[0];
 	bottomPaddle = paddles[1];
 	
+	// Object to contain the position of collision 
+	var particlePosition = {}; 
+	
 	// If the ball strikes with paddles,
 	// invert the y-velocity vector of ball,
 	// increment the points, play the collision sound,
@@ -105,10 +105,10 @@ function update() {
 	// emitted from that position, set the flag variable,
 	// and change the multiplier
 	if(doesBallCollidesWithPaddle(ball, topPaddle)) {
-		collideAction(topPaddle);
+		collideAction(particlePosition, topPaddle);
 	}	
 	else if(doesBallCollidesWithPaddle(ball, bottomPaddle)) {
-		collideAction(bottomPaddle);
+		collideAction(particlePosition, bottomPaddle);
 	}	
 	else {
 		// Collide with walls, If the ball hits the top/bottom,
@@ -136,13 +136,8 @@ function update() {
 	
 	// If flag is set, push the particles
 	if(isCollison) { 
-		for(var k = 0; k < particlesCount; k++) {
-			particles.push(new Particle(particlePos.x, particlePos.y, multiplier));
-		}
-	}	
-	
-	// Emit particles/sparks
-	emitParticles();
+		new ParticleEmitter(ctx, particlePosition, multiplier);
+	}
 	
 	// reset flag
 	isCollison = false;
@@ -167,17 +162,17 @@ function doesBallCollidesWithPaddle(b, p) {
 }
 
 //Do this when collides == true
-function collideAction(paddle) {
+function collideAction(particlePosition, paddle) {
 	ball.vy = -ball.vy;
 	
 	if(paddleHit == paddleHitTop) {
 		ball.y = paddle.y - paddle.h;
-		particlePos.y = ball.y + ball.r;
+		particlePosition.y = ball.y + ball.r;
 		multiplier = -1;	
 	}	
 	else if(paddleHit == paddleHitBottom) {
 		ball.y = paddle.h + ball.r;
-		particlePos.y = ball.y - ball.r;
+		particlePosition.y = ball.y - ball.r;
 		multiplier = 1;	
 	}
 	
@@ -193,29 +188,9 @@ function collideAction(paddle) {
 		collision.play();
 	}
 	
-	particlePos.x = ball.x;
+	particlePosition.x = ball.x;
 	isCollison = true;
-}
-
-// Function for emitting particles
-function emitParticles() { 
-	for(var j = 0; j < particles.length; j++) {
-		par = particles[j];
-		
-		ctx.beginPath(); 
-		ctx.fillStyle = "white";
-		if (par.radius > 0) {
-			ctx.arc(par.x, par.y, par.radius, 0, Math.PI*2, false);
-		}
-		ctx.fill();	 
-		
-		par.x += par.vx; 
-		par.y += par.vy; 
-		
-		// Reduce radius so that the particles die after a few seconds
-		par.radius = Math.max(par.radius - 0.05, 0.0); 		
-	} 
-}
+};
 
 // Function for updating score
 function updateScore() {
@@ -260,8 +235,8 @@ function startScreen() {
 function btnClick(e) {
 	
 	// Variables for storing mouse position on click
-	var mx = e.pageX,
-			my = e.pageY;
+	var mx = e.pageX;
+	var my = e.pageY;
 	
 	// Click start button
 	if(mx >= startBtn.x && mx <= startBtn.x + startBtn.w) {
