@@ -22,23 +22,23 @@ window.cancelRequestAnimFrame = ( function() {
 })();
 
 // Initialize canvas and required variables
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d"); // Create canvas context
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d'); // Create canvas context
 var W = 300; // Window's width
 var H = window.innerHeight - 100; // Window's height
 var ball = new Ball(); // Ball object
-var topPaddle = new Paddle("top", W, H);
-var bottomPaddle = new Paddle("bottom", W, H);
+var topPaddle = new Paddle('top', W, H);
+var bottomPaddle = new Paddle('bottom', W, H);
 var mousePointer = new MousePointer(); // Mouse object to store it's current position
 var points = 0; // Variable to store points
-var startBtn =  new Button("Start"); // Start button object
-var restartBtn = new Button("Restart"); // Restart button object
+var startBtn =  new Button('Start'); // Start button object
+var restartBtn = new Button('Restart'); // Restart button object
 var isGameOver = false; // flag variable, changed when the game is over
 var init; // variable to initialize animation
 var paddleHit; // contains which paddle was hit
 var paddleHitTop = 0; // paddle hit was top
 var paddleHitBottom = 1; // paddle hit was bottom
-var collision = document.getElementById("collide"); // Initialise the collision sound
+var collideSound = document.getElementById('collideSound'); // Initialise the collision sound
 
 // Add mousemove and mousedown events to the canvas
 canvas.addEventListener("mousemove", mousePointer.trackPosition, true);
@@ -151,13 +151,13 @@ function collideAction(paddle) {
 	points++;
 	ball.increaseBallSpeed(points);
 	
-	if(collision) {
+	if(collideSound) {
 		if(points > 0){ 
-			collision.pause();
+			collideSound.pause();
 		}
 		
-		collision.currentTime = 0;
-		collision.play();
+		collideSound.currentTime = 0;
+		collideSound.play();
 	}
 };
 
@@ -218,11 +218,9 @@ function btnClick(e) {
 	// If the game is over, and the restart button is clicked
 	if(isGameOver) {
 		if(mx >= restartBtn.x && mx <= restartBtn.x + restartBtn.w) {
-			ball.x = 20;
-			ball.y = 20;
+			ball.reposition();
 			points = 0;
-			ball.vx = 4;
-			ball.vy = 8;
+			
 			animloop();
 			
 			isGameOver = false;

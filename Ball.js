@@ -69,4 +69,11 @@ var Ball = function (){
 	self.inverseXSpeed = function(){
 		ball.vx = -ball.vx;
 	};
+	
+	self.reposition = function(){
+		self.x = 20;
+		self.y = 20;
+		self.vx = 4;
+		self.vy = 8;
+	};
 };
