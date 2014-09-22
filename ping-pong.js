@@ -101,18 +101,18 @@ function update() {
 			ball.y = H - ball.r;
 			gameOver();
 		}		
-		else if(ball.y < 0) {
+		else if(ball.collidesTopWall()) {
 			ball.y = ball.r;
 			gameOver();
 		}
 		
 		// If ball strikes the vertical walls, invert the 
 		// x-velocity vector of ball
-		if(ball.x + ball.r > W) {
+		if(ball.collidesRightWall(W)) {
 			ball.vx = -ball.vx;
 			ball.x = W - ball.r;
 		}		
-		else if(ball.x -ball.r < 0) {
+		else if(ball.collidesLeftWall()) {
 			ball.vx = -ball.vx;
 			ball.x = ball.r;
 		}

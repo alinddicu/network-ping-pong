@@ -37,4 +37,16 @@ var Ball = function (){
 	self.collidesBottomWall = function(tableHeight){
 		self.y + self.r > tableHeight;
 	};
+	
+	self.collidesTopWall = function(){
+		return self.y < 0;
+	};
+	
+	self.collidesRightWall(tableWidth){
+		return self.x + self.r > tableWidth;
+	};
+	
+	self.collidesLeftWall(){
+		return ball.x - ball.r < 0;
+	};
 };
