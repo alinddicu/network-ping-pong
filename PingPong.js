@@ -1,27 +1,6 @@
 
 function PingPong(){
 	var fps = 60;
-
-	window.requestAnimFrame = (function(){
-		return  window.requestAnimationFrame || 
-			window.webkitRequestAnimationFrame || 
-			window.mozRequestAnimationFrame || 
-			window.oRequestAnimationFrame || 
-			window.msRequestAnimationFrame ||  
-			function(callback){
-				return window.setTimeout(callback, 1000 / fps);
-			};
-	})();
-
-	window.cancelRequestAnimFrame = ( function() {
-		return window.cancelAnimationFrame ||
-			window.webkitCancelRequestAnimationFrame ||
-			window.mozCancelRequestAnimationFrame ||
-			window.oCancelRequestAnimationFrame ||
-			window.msCancelRequestAnimationFrame ||
-			clearTimeout
-	})();
-
 	var canvas = document.getElementById('canvas');
 	var ctx = canvas.getContext('2d');
 	var tableWidth = 300;
@@ -39,7 +18,6 @@ function PingPong(){
 
 	canvas.addEventListener('mousemove', mousePointer.trackPosition, true);
 	canvas.addEventListener('mousedown', btnClick, true);
-
 	canvas.width = tableWidth;
 	canvas.height = tableHeight;
 
@@ -48,7 +26,7 @@ function PingPong(){
 		ctx.fillRect(0, 0, tableWidth, tableHeight);
 	};
 
-	function draw() {
+	function drawAll() {
 		paintCanvas();
 		
 		topPaddle.draw(ctx);
@@ -67,11 +45,11 @@ function PingPong(){
 		
 		ball.move();
 		
-		if(ballPaddleCollider.doesBallCollidesWithPaddle(ball, topPaddle)) {
-			pingPongs = ballPaddleCollider.collideAction(ball, topPaddle, pingPongs);
+		if(ballPaddleCollider.doesCollide(ball, topPaddle)) {
+			pingPongs = ballPaddleCollider.collide(ball, topPaddle, pingPongs);
 		}	
-		else if(ballPaddleCollider.doesBallCollidesWithPaddle(ball, bottomPaddle)) {
-			pingPongs = ballPaddleCollider.collideAction(ball, bottomPaddle, pingPongs);
+		else if(ballPaddleCollider.doesCollide(ball, bottomPaddle)) {
+			pingPongs = ballPaddleCollider.collide(ball, bottomPaddle, pingPongs);
 		}	
 		else {
 			if(ball.collidesBottomWall(tableHeight)) {
@@ -105,11 +83,11 @@ function PingPong(){
 
 	function animloop() {
 		init = requestAnimFrame(animloop);
-		draw();
+		drawAll();
 	}
 
-	function startScreen() {
-		draw();
+	function start() {
+		drawAll();
 		startBtn.draw(ctx);
 	}
 
@@ -136,5 +114,25 @@ function PingPong(){
 		}
 	}
 
-	startScreen();
+	window.requestAnimFrame = (function(){
+		return  window.requestAnimationFrame || 
+			window.webkitRequestAnimationFrame || 
+			window.mozRequestAnimationFrame || 
+			window.oRequestAnimationFrame || 
+			window.msRequestAnimationFrame ||  
+			function(callback){
+				return window.setTimeout(callback, 1000 / fps);
+			};
+	})();
+
+	window.cancelRequestAnimFrame = ( function() {
+		return window.cancelAnimationFrame ||
+			window.webkitCancelRequestAnimationFrame ||
+			window.mozCancelRequestAnimationFrame ||
+			window.oCancelRequestAnimationFrame ||
+			window.msCancelRequestAnimationFrame ||
+			clearTimeout
+	})();
+
+	start();
 };

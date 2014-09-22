@@ -7,7 +7,7 @@ function BallPaddleCollider(){
 	self.paddleHitBottom = 1;
 	self.collideSound = document.getElementById('collideSound');
 	
-	self.doesBallCollidesWithPaddle = function(ball, paddle) {
+	self.doesCollide = function(ball, paddle) {
 		if(ball.x + ball.r >= paddle.x && ball.x - ball.r <= paddle.x + paddle.w) {
 			if(ball.y >= (paddle.y - paddle.h) && paddle.y > 0){
 				self.paddleHit = self.paddleHitTop;
@@ -23,7 +23,7 @@ function BallPaddleCollider(){
 		}
 	}
 	
-	self.collideAction = function(ball, paddle, pingPongs) {
+	self.collide = function(ball, paddle, pingPongs) {
 		ball.vy = -ball.vy;
 		
 		if(self.paddleHit == self.paddleHitTop) {
