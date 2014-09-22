@@ -79,8 +79,7 @@ function update() {
 	}
 	
 	// Move the ball
-	ball.x += ball.vx;
-	ball.y += ball.vy;
+	ball.move();
 	
 	// Collision with paddles 
 	
