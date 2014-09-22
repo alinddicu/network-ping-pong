@@ -1,19 +1,21 @@
 
 var Button = function(label, tableWidth, tableHeight) {	
-	this.w = 100;
-	this.h = 50;
-	this.x = tableWidth/2 - 50;
-	this.y = tableHeight/2 - 25;
+	var self = this;
 	
-	this.draw = function() {
-		ctx.strokeStyle = "white";
-		ctx.lineWidth = "2";
-		ctx.strokeRect(this.x, this.y, this.w, this.h);
+	self.w = 100;
+	self.h = 50;
+	self.x = tableWidth/2 - 50;
+	self.y = tableHeight/2 - 25;
+	
+	self.draw = function(drawCtx) {
+		drawCtx.strokeStyle = "white";
+		drawCtx.lineWidth = "2";
+		drawCtx.strokeRect(self.x, self.y, self.w, self.h);
 		
-		ctx.font = "18px Arial, sans-serif";
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillStlye = "white";
-		ctx.fillText(label, tableWidth/2, tableHeight/2 );
+		drawCtx.font = "18px Arial, sans-serif";
+		drawCtx.textAlign = "center";
+		drawCtx.textBaseline = "middle";
+		drawCtx.fillStlye = "white";
+		drawCtx.fillText(label, tableWidth/2, tableHeight/2 );
 	}
 };

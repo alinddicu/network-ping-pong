@@ -11,6 +11,6 @@ function MousePointer(){
 	};
 	
 	self.hasMoved = function(){
-		return mousePointer.x && mousePointer.y;
+		return self.x && self.y;
 	};
 };

@@ -10,11 +10,11 @@ var Ball = function (){
 	self.vx = 4;
 	self.vy = 8;
 	
-	self.draw = function() {
-		ctx.beginPath();
-		ctx.fillStyle = self.c;
-		ctx.arc(self.x, self.y, self.r, 0, Math.PI*2, false);
-		ctx.fill();
+	self.draw = function(drawCtx) {
+		drawCtx.beginPath();
+		drawCtx.fillStyle = self.c;
+		drawCtx.arc(self.x, self.y, self.r, 0, Math.PI*2, false);
+		drawCtx.fill();
 	};
 	
 	self.increaseBallSpeed = function (points) {
@@ -44,7 +44,7 @@ var Ball = function (){
 	};
 	
 	self.repositionTopWall = function(){
-		ball.y = ball.r;
+		self.y = self.r;
 	}
 	
 	self.collidesRightWall = function(tableWidth){
@@ -56,7 +56,7 @@ var Ball = function (){
 	}
 	
 	self.collidesLeftWall = function(){
-		return ball.x - ball.r < 0;
+		return self.x - self.r < 0;
 	};
 	
 	self.repostionLeftWall = function(){
@@ -64,7 +64,7 @@ var Ball = function (){
 	}
 	
 	self.inverseXSpeed = function(){
-		ball.vx = -ball.vx;
+		self.vx = -self.vx;
 	};
 	
 	self.reposition = function(){

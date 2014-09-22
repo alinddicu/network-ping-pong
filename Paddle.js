@@ -9,9 +9,9 @@ function Paddle(pos, tableWidth, tableHeight) {
 	self.x = tableWidth/2 - self.w/2;
 	self.y = (self.name == "top") ? 0 : tableHeight - self.h;	
 	
-	self.draw = function(){	
-		ctx.fillStyle = "white";
-		ctx.fillRect(self.x, self.y, self.w, self.h);
+	self.draw = function(drawCtx){	
+		drawCtx.fillStyle = "white";
+		drawCtx.fillRect(self.x, self.y, self.w, self.h);
 	};
 	
 	self.move = function(mousePointerX){
