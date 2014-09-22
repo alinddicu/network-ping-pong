@@ -28,7 +28,7 @@ var W = 300; // Window's width
 var H = window.innerHeight - 100; // Window's height
 var ball = new Ball(); // Ball object
 var paddles = [new Paddle("bottom"), new Paddle("top")]; // Array containing two paddles
-var mouse = {}; // Mouse object to store it's current position
+var mousePointer = new MousePointer(); // Mouse object to store it's current position
 var points = 0; // Variable to store points
 var startBtn =  new Button("Start"); // Start button object
 var restartBtn = new Button("Restart"); // Restart button object
@@ -40,7 +40,7 @@ var paddleHitBottom = 1; // paddle hit was bottom
 var collision = document.getElementById("collide"); // Initialise the collision sound
 
 // Add mousemove and mousedown events to the canvas
-canvas.addEventListener("mousemove", trackPosition, true);
+canvas.addEventListener("mousemove", mousePointer.trackPosition, true);
 canvas.addEventListener("mousedown", btnClick, true);
 
 // Set the canvas's height and width to full screen
@@ -64,12 +64,6 @@ function draw() {
 	update();
 }
 
-// Track the position of mouse cursor
-function trackPosition(e) {
-	mouse.x = e.pageX;
-	mouse.y = e.pageY;
-}
-
 // Function to update positions, score and everything.
 // Basically, the main game logic is defined here
 function update() {
@@ -78,10 +72,10 @@ function update() {
 	updateScore(); 
 	
 	// Move the paddles on mouse move
-	if(mouse.x && mouse.y) {
+	if(mousePointer.hasMoved()) {
 		for(var i = 0; i < paddles.length; i++) {
 			var paddle = paddles[i];
-			paddle.x = mouse.x - paddle.w/2;
+			paddle.x = mousePointer.x - paddle.w/2;
 		}		
 	}
 	
