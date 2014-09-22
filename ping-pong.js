@@ -27,7 +27,8 @@ var ctx = canvas.getContext("2d"); // Create canvas context
 var W = 300; // Window's width
 var H = window.innerHeight - 100; // Window's height
 var ball = new Ball(); // Ball object
-var paddles = [new Paddle("bottom"), new Paddle("top")]; // Array containing two paddles
+var topPaddle = new Paddle("top");
+var bottomPaddle = new Paddle("bottom");
 var mousePointer = new MousePointer(); // Mouse object to store it's current position
 var points = 0; // Variable to store points
 var startBtn =  new Button("Start"); // Start button object
@@ -56,9 +57,9 @@ function paintCanvas() {
 // Draw everything on canvas
 function draw() {
 	paintCanvas();
-	for(var i = 0; i < paddles.length; i++) {
-		var paddle = paddles[i].draw();
-	}
+	
+	topPaddle.draw();
+	bottomPaddle.draw();
 	
 	ball.draw();
 	update();
@@ -72,20 +73,16 @@ function update() {
 	updateScore(); 
 	
 	// Move the paddles on mouse move
-	if(mousePointer.hasMoved()) {
-		for(var i = 0; i < paddles.length; i++) {
-			var paddle = paddles[i];
-			paddle.x = mousePointer.x - paddle.w/2;
-		}		
+	if(mousePointer.hasMoved()) {	
+		topPaddle.move(mousePointer.x);
+		bottomPaddle.move(mousePointer.x);
 	}
 	
 	// Move the ball
 	ball.x += ball.vx;
 	ball.y += ball.vy;
 	
-	// Collision with paddles
-	topPaddle = paddles[0];
-	bottomPaddle = paddles[1]; 
+	// Collision with paddles 
 	
 	// If the ball strikes with paddles,
 	// invert the y-velocity vector of ball,

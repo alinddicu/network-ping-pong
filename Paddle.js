@@ -13,4 +13,8 @@ function Paddle(pos) {
 		ctx.fillStyle = "white";
 		ctx.fillRect(this.x, this.y, this.w, this.h);
 	};
+	
+	this.move = function(mousePointerX){
+		this.x =  mousePointerX - this.w/2;
+	};
 };
