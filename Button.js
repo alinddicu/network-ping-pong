@@ -1,10 +1,10 @@
 
 // button 
-var Button = function(label) {	
+var Button = function(label, tableWidth, tableHeight) {	
 	this.w = 100;
 	this.h = 50;
-	this.x = W/2 - 50;
-	this.y = H/2 - 25;
+	this.x = tableWidth/2 - 50;
+	this.y = tableHeight/2 - 25;
 	
 	this.draw = function() {
 		ctx.strokeStyle = "white";
@@ -15,6 +15,6 @@ var Button = function(label) {
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 		ctx.fillStlye = "white";
-		ctx.fillText(label, W/2, H/2 );
+		ctx.fillText(label, tableWidth/2, tableHeight/2 );
 	}
 };

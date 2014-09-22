@@ -24,16 +24,16 @@ window.cancelRequestAnimFrame = ( function() {
 // Initialize canvas and required variables
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d'); // Create canvas context
-var W = 300; // Window's width
-var H = window.innerHeight - 100; // Window's height
+var tableWidth = 300; // Window's width
+var tableHeight = window.innerHeight - 100; // Window's height
 var ball = new Ball(); // Ball object
-var topPaddle = new Paddle('top', W, H);
-var bottomPaddle = new Paddle('bottom', W, H);
+var topPaddle = new Paddle('top', tableWidth, tableHeight);
+var bottomPaddle = new Paddle('bottom', tableWidth, tableHeight);
 var ballPaddleCollider = new BallPaddleCollider();
 var mousePointer = new MousePointer(); // Mouse object to store it's current position
 var points = 0; // Variable to store points
-var startBtn =  new Button('Start'); // Start button object
-var restartBtn = new Button('Restart'); // Restart button object
+var startBtn =  new Button('Start', tableWidth, tableHeight); // Start button object
+var restartBtn = new Button('Restart', tableWidth, tableHeight); // Restart button object
 var isGameOver = false; // flag variable, changed when the game is over
 var init; // variable to initialize animation
 
@@ -42,13 +42,13 @@ canvas.addEventListener("mousemove", mousePointer.trackPosition, true);
 canvas.addEventListener("mousedown", btnClick, true);
 
 // Set the canvas's height and width to full screen
-canvas.width = W;
-canvas.height = H;
+canvas.width = tableWidth;
+canvas.height = tableHeight;
 
 // Function to paint canvas
 function paintCanvas() {
 	ctx.fillStyle = "black";
-	ctx.fillRect(0, 0, W, H);
+	ctx.fillRect(0, 0, tableWidth, tableHeight);
 };
 
 // Draw everything on canvas
@@ -94,8 +94,8 @@ function update() {
 	else {
 		// Collide with walls, If the ball hits the top/bottom,
 		// walls, run gameOver() function
-		if(ball.collidesBottomWall(H)) {
-			ball.repositionBottomWall(H);
+		if(ball.collidesBottomWall(tableHeight)) {
+			ball.repositionBottomWall(tableHeight);
 			gameOver();
 		}		
 		else if(ball.collidesTopWall()) {
@@ -105,9 +105,9 @@ function update() {
 		
 		// If ball strikes the vertical walls, invert the 
 		// x-velocity vector of ball
-		if(ball.collidesRightWall(W)) {
+		if(ball.collidesRightWall(tableWidth)) {
 			ball.inverseXSpeed();
-			ball.repostionRightWall(W);
+			ball.repostionRightWall(tableWidth);
 		}		
 		else if(ball.collidesLeftWall()) {
 			ball.inverseXSpeed();
@@ -131,7 +131,7 @@ function gameOver() {
 	ctx.font = "20px Arial, sans-serif";
 	ctx.textAlign = "center";
 	ctx.textBaseline = "middle";
-	ctx.fillText("Game Over - You scored " + points + " points!", W/2, H/2 + 25 );
+	ctx.fillText("Game Over - You scored " + points + " points!", tableWidth/2, tableHeight/2 + 25 );
 	
 	// Stop the Animation
 	cancelRequestAnimFrame(init);

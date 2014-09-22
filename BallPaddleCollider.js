@@ -10,11 +10,11 @@ function BallPaddleCollider(){
 	self.doesBallCollidesWithPaddle = function(ball, paddle) {
 		if(ball.x + ball.r >= paddle.x && ball.x - ball.r <= paddle.x + paddle.w) {
 			if(ball.y >= (paddle.y - paddle.h) && paddle.y > 0){
-				paddleHit = paddleHitTop;
+				self.paddleHit = self.paddleHitTop;
 				return true;
 			}
 			else if(ball.y <= paddle.h && paddle.y == 0) {
-				paddleHit = paddleHitBottom;
+				self.paddleHit = self.paddleHitBottom;
 				return true;
 			}
 			else {
@@ -26,10 +26,10 @@ function BallPaddleCollider(){
 	self.collideAction = function(ball, paddle, points) {
 		ball.vy = -ball.vy;
 		
-		if(paddleHit == paddleHitTop) {
+		if(self.paddleHit == self.paddleHitTop) {
 			ball.y = paddle.y - paddle.h;	
 		}	
-		else if(paddleHit == paddleHitBottom) {
+		else if(self.paddleHit == self.paddleHitBottom) {
 			ball.y = paddle.h + ball.r;
 		}
 		
