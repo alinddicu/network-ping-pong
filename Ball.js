@@ -27,10 +27,14 @@ var Ball = function (){
 				self.vy += (self.vy < 0) ? -2 : 2;
 			}
 		}
-	}
+	};
 	
 	self.move = function(){
 		self.x += self.vx;
 		self.y += self.vy;
+	};
+	
+	self.collidesBottomWall = function(tableHeight){
+		self.y + self.r > tableHeight;
 	};
 };

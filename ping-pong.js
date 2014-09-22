@@ -97,7 +97,7 @@ function update() {
 	else {
 		// Collide with walls, If the ball hits the top/bottom,
 		// walls, run gameOver() function
-		if(ball.y + ball.r > H) {
+		if(ball.collidesBottomWall(H)) {
 			ball.y = H - ball.r;
 			gameOver();
 		}		
