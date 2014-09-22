@@ -35,18 +35,38 @@ var Ball = function (){
 	};
 	
 	self.collidesBottomWall = function(tableHeight){
-		self.y + self.r > tableHeight;
+		return self.y + self.r > tableHeight;
+	};
+	
+	self.repositionBottomWall = function(tableHeight){
+		self.y = tableHeight;
 	};
 	
 	self.collidesTopWall = function(){
 		return self.y < 0;
 	};
 	
-	self.collidesRightWall(tableWidth){
+	self.repositionTopWall = function(){
+		ball.y = ball.r;
+	}
+	
+	self.collidesRightWall = function(tableWidth){
 		return self.x + self.r > tableWidth;
 	};
 	
-	self.collidesLeftWall(){
+	self.repostionRightWall = function(tableWidth){ 
+		self.x = tableWidth - self.r;
+	}
+	
+	self.collidesLeftWall = function(){
 		return ball.x - ball.r < 0;
+	};
+	
+	self.repostionLeftWall = function(){
+		self.x = self.r;
+	}
+	
+	self.inverseXSpeed = function(){
+		ball.vx = -ball.vx;
 	};
 };

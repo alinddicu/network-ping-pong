@@ -98,23 +98,23 @@ function update() {
 		// Collide with walls, If the ball hits the top/bottom,
 		// walls, run gameOver() function
 		if(ball.collidesBottomWall(H)) {
-			ball.y = H - ball.r;
+			ball.repositionBottomWall(H);
 			gameOver();
 		}		
 		else if(ball.collidesTopWall()) {
-			ball.y = ball.r;
+			ball.repositionTopWall();
 			gameOver();
 		}
 		
 		// If ball strikes the vertical walls, invert the 
 		// x-velocity vector of ball
 		if(ball.collidesRightWall(W)) {
-			ball.vx = -ball.vx;
-			ball.x = W - ball.r;
+			ball.inverseXSpeed();
+			ball.repostionRightWall(W);
 		}		
 		else if(ball.collidesLeftWall()) {
-			ball.vx = -ball.vx;
-			ball.x = ball.r;
+			ball.inverseXSpeed();
+			ball.repostionLeftWall();
 		}
 	}
 }
