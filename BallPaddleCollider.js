@@ -2,10 +2,10 @@
 function BallPaddleCollider(){
 	var self = this;
 
-	self.paddleHit; // contains which paddle was hit
-	self.paddleHitTop = 0; // paddle hit was top
-	self.paddleHitBottom = 1; // paddle hit was bottom
-	self.collideSound = document.getElementById('collideSound'); // Initialise the collision sound
+	self.paddleHit;
+	self.paddleHitTop = 0
+	self.paddleHitBottom = 1;
+	self.collideSound = document.getElementById('collideSound');
 	
 	self.doesBallCollidesWithPaddle = function(ball, paddle) {
 		if(ball.x + ball.r >= paddle.x && ball.x - ball.r <= paddle.x + paddle.w) {
@@ -23,7 +23,7 @@ function BallPaddleCollider(){
 		}
 	}
 	
-	self.collideAction = function(ball, paddle, points) {
+	self.collideAction = function(ball, paddle, pingPongs) {
 		ball.vy = -ball.vy;
 		
 		if(self.paddleHit == self.paddleHitTop) {
@@ -33,11 +33,11 @@ function BallPaddleCollider(){
 			ball.y = paddle.h + ball.r;
 		}
 		
-		points++;
-		ball.increaseBallSpeed(points);
+		pingPongs++;
+		ball.increaseBallSpeed(pingPongs);
 		
 		if(collideSound) {
-			if(points > 0){ 
+			if(pingPongs > 0){ 
 				collideSound.pause();
 			}
 			
@@ -45,6 +45,6 @@ function BallPaddleCollider(){
 			collideSound.play();
 		}
 		
-		return points;
+		return pingPongs;
 	};
 };

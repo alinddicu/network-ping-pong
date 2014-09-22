@@ -1,9 +1,8 @@
 
-// Ball object
 var Ball = function (){
 	var self = this;
 
-	self.increaseSpeedThreshold = 10; // number of hit after which speed is increased
+	self.increaseSpeedThreshold = 10;
 	self.x = 50;
 	self.y = 50;
 	self.r = 5;
@@ -11,7 +10,6 @@ var Ball = function (){
 	self.vx = 4;
 	self.vy = 8;
 	
-	// Function for drawing ball on canvas
 	self.draw = function() {
 		ctx.beginPath();
 		ctx.fillStyle = self.c;
@@ -19,7 +17,6 @@ var Ball = function (){
 		ctx.fill();
 	};
 	
-	// Function to increase speed after every 5 points
 	self.increaseBallSpeed = function (points) {
 		if(points % self.increaseSpeedThreshold == 0) {
 			if(Math.abs(self.vx) < 15) {

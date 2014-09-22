@@ -1,5 +1,4 @@
 
-// button 
 var Button = function(label, tableWidth, tableHeight) {	
 	this.w = 100;
 	this.h = 50;
