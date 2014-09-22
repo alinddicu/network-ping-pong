@@ -31,7 +31,7 @@ var topPaddle = new Paddle('top', tableWidth, tableHeight);
 var bottomPaddle = new Paddle('bottom', tableWidth, tableHeight);
 var ballPaddleCollider = new BallPaddleCollider();
 var mousePointer = new MousePointer(); // Mouse object to store it's current position
-var points = 0; // Variable to store points
+var pingPongs = 0; // Variable to store points
 var startBtn =  new Button('Start', tableWidth, tableHeight); // Start button object
 var restartBtn = new Button('Restart', tableWidth, tableHeight); // Restart button object
 var isGameOver = false; // flag variable, changed when the game is over
@@ -66,9 +66,6 @@ function draw() {
 // Basically, the main game logic is defined here
 function update() {
 	
-	// Update scores
-	updateScore(); 
-	
 	// Move the paddles on mouse move
 	if(mousePointer.hasMoved()) {	
 		topPaddle.move(mousePointer.x);
@@ -86,10 +83,10 @@ function update() {
 	// save collision's position so that sparks can be
 	// emitted from that position, set the flag variable
 	if(ballPaddleCollider.doesBallCollidesWithPaddle(ball, topPaddle)) {
-		points = ballPaddleCollider.collideAction(ball, topPaddle, points);
+		pingPongs = ballPaddleCollider.collideAction(ball, topPaddle, pingPongs);
 	}	
 	else if(ballPaddleCollider.doesBallCollidesWithPaddle(ball, bottomPaddle)) {
-		points = ballPaddleCollider.collideAction(ball, bottomPaddle, points);
+		pingPongs = ballPaddleCollider.collideAction(ball, bottomPaddle, pingPongs);
 	}	
 	else {
 		// Collide with walls, If the ball hits the top/bottom,
@@ -116,22 +113,8 @@ function update() {
 	}
 };
 
-// Function for updating score
-function updateScore() {
-	ctx.fillStlye = "white";
-	ctx.font = "16px Arial, sans-serif";
-	ctx.textAlign = "left";
-	ctx.textBaseline = "top";
-	ctx.fillText("Score: " + points, 20, 20 );
-};
-
 // Function to run when the game overs
 function gameOver() {
-	ctx.fillStlye = "white";
-	ctx.font = "20px Arial, sans-serif";
-	ctx.textAlign = "center";
-	ctx.textBaseline = "middle";
-	ctx.fillText("Game Over - You scored " + points + " points!", tableWidth/2, tableHeight/2 + 25 );
 	
 	// Stop the Animation
 	cancelRequestAnimFrame(init);
@@ -174,7 +157,7 @@ function btnClick(e) {
 	if(isGameOver) {
 		if(mx >= restartBtn.x && mx <= restartBtn.x + restartBtn.w) {
 			ball.reposition();
-			points = 0;
+			pingPongs = 0;
 			
 			animloop();
 			
