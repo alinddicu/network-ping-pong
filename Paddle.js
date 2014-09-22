@@ -1,20 +1,23 @@
 
 // Function for creating paddles
-function Paddle(pos) {
+function Paddle(pos, tableWidth, tableHeight) {
+	var self = this;
+	
 	// Height and width
-	this.h = 5;
-	this.w = 150;
+	self.h = 5;
+	self.w = 150;
+	self.name = pos;
 	
 	// Paddle's position
-	this.x = W/2 - this.w/2;
-	this.y = (pos == "top") ? 0 : H - this.h;	
+	self.x = tableWidth/2 - self.w/2;
+	self.y = (self.name == "top") ? 0 : tableHeight - self.h;	
 	
-	this.draw = function(){	
+	self.draw = function(){	
 		ctx.fillStyle = "white";
-		ctx.fillRect(this.x, this.y, this.w, this.h);
+		ctx.fillRect(self.x, self.y, self.w, self.h);
 	};
 	
-	this.move = function(mousePointerX){
-		this.x =  mousePointerX - this.w/2;
+	self.move = function(mousePointerX){
+		self.x =  mousePointerX - self.w/2;
 	};
 };
