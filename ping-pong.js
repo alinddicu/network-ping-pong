@@ -29,16 +29,13 @@ var H = window.innerHeight - 100; // Window's height
 var ball = new Ball(); // Ball object
 var topPaddle = new Paddle('top', W, H);
 var bottomPaddle = new Paddle('bottom', W, H);
+var ballPaddleCollider = new BallPaddleCollider();
 var mousePointer = new MousePointer(); // Mouse object to store it's current position
 var points = 0; // Variable to store points
 var startBtn =  new Button('Start'); // Start button object
 var restartBtn = new Button('Restart'); // Restart button object
 var isGameOver = false; // flag variable, changed when the game is over
 var init; // variable to initialize animation
-var paddleHit; // contains which paddle was hit
-var paddleHitTop = 0; // paddle hit was top
-var paddleHitBottom = 1; // paddle hit was bottom
-var collideSound = document.getElementById('collideSound'); // Initialise the collision sound
 
 // Add mousemove and mousedown events to the canvas
 canvas.addEventListener("mousemove", mousePointer.trackPosition, true);
@@ -63,7 +60,7 @@ function draw() {
 	
 	ball.draw();
 	update();
-}
+};
 
 // Function to update positions, score and everything.
 // Basically, the main game logic is defined here
@@ -88,11 +85,11 @@ function update() {
 	// increment the points, play the collision sound,
 	// save collision's position so that sparks can be
 	// emitted from that position, set the flag variable
-	if(doesBallCollidesWithPaddle(topPaddle)) {
-		collideAction(topPaddle);
+	if(ballPaddleCollider.doesBallCollidesWithPaddle(ball, topPaddle)) {
+		points = ballPaddleCollider.collideAction(ball, topPaddle, points);
 	}	
-	else if(doesBallCollidesWithPaddle(bottomPaddle)) {
-		collideAction(bottomPaddle);
+	else if(ballPaddleCollider.doesBallCollidesWithPaddle(ball, bottomPaddle)) {
+		points = ballPaddleCollider.collideAction(ball, bottomPaddle, points);
 	}	
 	else {
 		// Collide with walls, If the ball hits the top/bottom,
@@ -117,48 +114,6 @@ function update() {
 			ball.repostionLeftWall();
 		}
 	}
-}
-
-//Function to check collision between ball and one of
-//the paddles
-function doesBallCollidesWithPaddle(paddle) {
-	if(ball.x + ball.r >= paddle.x && ball.x - ball.r <= paddle.x + paddle.w) {
-		if(ball.y >= (paddle.y - paddle.h) && paddle.y > 0){
-			paddleHit = paddleHitTop;
-			return true;
-		}
-		else if(ball.y <= paddle.h && paddle.y == 0) {
-			paddleHit = paddleHitBottom;
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-}
-
-//Do this when collides == true
-function collideAction(paddle) {
-	ball.vy = -ball.vy;
-	
-	if(paddleHit == paddleHitTop) {
-		ball.y = paddle.y - paddle.h;	
-	}	
-	else if(paddleHit == paddleHitBottom) {
-		ball.y = paddle.h + ball.r;
-	}
-	
-	points++;
-	ball.increaseBallSpeed(points);
-	
-	if(collideSound) {
-		if(points > 0){ 
-			collideSound.pause();
-		}
-		
-		collideSound.currentTime = 0;
-		collideSound.play();
-	}
 };
 
 // Function for updating score
@@ -168,7 +123,7 @@ function updateScore() {
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
 	ctx.fillText("Score: " + points, 20, 20 );
-}
+};
 
 // Function to run when the game overs
 function gameOver() {
@@ -186,7 +141,7 @@ function gameOver() {
 	
 	// Show the restart button
 	restartBtn.draw();
-}
+};
 
 // Function for running the whole animation
 function animloop() {
